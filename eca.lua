@@ -78,3 +78,4 @@ local function AllPatterns(size)
 end
 
 Main(40, 137)
+AllPatterns(21)
