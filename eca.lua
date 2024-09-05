@@ -34,7 +34,7 @@ local function NextGen(currentGen)
 		local b = currentGen[i]
 		local c =  currentGen[i+1] or 0
 		
-		table.insert(newGen, Set(a,b,c))
+		table.insert(newGen, Evaluate(a,b,c))
 	end
 	
 	return newGen
