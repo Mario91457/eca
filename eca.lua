@@ -1,7 +1,7 @@
 local Ruleset = {0, 0, 0, 0, 0, 0, 0, 0}
 local generation = 0
 
-local function Set(a, b, c)
+local function Evaluate(a, b, c)
 	local binary = tostring(a .. b .. c)
 	local convert = tonumber(binary, 2)
 	return Ruleset[8 - convert]
