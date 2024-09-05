@@ -1,17 +1,32 @@
---Roblox Studios
-
-local ruleset = {0, 1, 1, 1, 1, 0, 1, 0}
+local Ruleset = {0, 0, 0, 0, 0, 0, 0, 0}
 local generation = 0
-local Folder = script.Parent.Parent
-local startPos = Folder.Part.Position
 
-local function rule(a, b, c)
+local function Set(a, b, c)
 	local binary = tostring(a .. b .. c)
 	local convert = tonumber(binary, 2)
-	return ruleset[8 - convert]
+	return Ruleset[8 - convert]
 end
 
-local function nextGen(currentGen)
+local function NewRuleSet(number)
+    local newSet = {}
+    local remainder = ""
+
+    while number > 0 do
+          remainder = tostring(number % 2)..remainder
+          number = math.floor(number/2)
+    end
+
+    for i = 1, 8 - #remainder do
+        table.insert(newSet, 0)
+    end
+    for i = 1, #remainder do
+        local number = tonumber(string.sub(remainder, i, i))
+        table.insert(newSet, number)
+    end
+    return newSet
+end
+
+local function NextGen(currentGen)
 	local newGen = {}
 
 	for i = 1, #currentGen do
@@ -19,38 +34,47 @@ local function nextGen(currentGen)
 		local b = currentGen[i]
 		local c =  currentGen[i+1] or 0
 		
-		table.insert(newGen, rule(a,b,c))
+		table.insert(newGen, Set(a,b,c))
 	end
 	
 	return newGen
 end
 
-
-local function generatePattern(t)
-	for i,v in ipairs(t) do
-		if v == 1 then
-			local newPart = Instance.new("Part", Folder)
-			newPart.Anchored = true
-			newPart.Size = Vector3.new(1,1,1)
-			newPart.Position = Vector3.new(startPos.X + 1 + i , startPos.Y - generation, startPos.Z)
-		end	
-	end
+local function PrintPattern(t)
+    local string = "["
+    for i = 1, #t - 1 do
+        local convert = (t[i] == 1) and "." or " "
+        
+        string = string .. convert .. " "
+    end
+    string = string .. ((t[#t] == 1) and ".]" or " ]")
+    print(string)
 end
 
-local function main(size)
+local function Main(size, Rule)
+    print(string.rep("-", size*2+1))
+    print("Rule : "..Rule)
 	local currentGen = {}
 	
 	for i = 1, size do
 		currentGen[i] = 0
 	end
 	currentGen[math.ceil(size/2)] = 1
-	generatePattern(currentGen)
+	PrintPattern(currentGen)
+    	Ruleset = NewRuleSet(Rule)
+
 	for i = 0, size do
-		local newGen = nextGen(currentGen)
-		generation += 1
+		local newGen = NextGen(currentGen)
+		generation = generation + 1
 		currentGen  = newGen
-		generatePattern(currentGen)
+		PrintPattern(currentGen)
 	end
 end
 
-main(100)
+local function AllPatterns(size)
+    for i = 1, 255 do
+        Main(size, i)
+    end
+end
+
+Main(40, 137)
